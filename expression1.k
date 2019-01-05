@@ -1,28 +1,28 @@
-(Lam Identity:* -> *.
- Lam unIdentity:Pi A:*. (Identity A) -> A.
-
- Lam Product:* -> * -> *.
- Lam Pair:Pi A:*. Pi B:*. A -> B -> (Product A B).
-
- Lam Coproduct:* -> * -> *.
- Lam Left:Pi A:*. Pi B:*. A -> (Coproduct A B).
- Lam Right:Pi A:*. Pi B:*. B -> (Coproduct A B).
-
- Lam Maybe:* -> *.
- Lam Just:Pi A:*. A -> (Maybe A).
- Lam Nothing:Pi A:*. Maybe A.
-
- Lam List:* -> *.
- Lam Cons:Pi A:*. A -> (List A) -> (List A).
- Lam Nil:Pi A:*. List A.
-
- Cons Nat 1 (Cons Nat 2 (Nil Nat)))
-
+((Lam Identity:* -> *.
+  Lam unIdentity:Pi A:*. (Identity A) -> A.
+  
+  Lam Product:* -> * -> *.
+  Lam Pair:Pi A:*. Pi B:*. A -> B -> (Product A B).
+  
+  Lam Coproduct:* -> * -> *.
+  Lam Left:Pi A:*. Pi B:*. A -> (Coproduct A B).
+  Lam Right:Pi A:*. Pi B:*. B -> (Coproduct A B).
+  
+  Lam Maybe:* -> *.
+  Lam Just:Pi A:*. A -> (Maybe A).
+  Lam Nothing:Pi A:*. Maybe A.
+  
+  Lam List:* -> *.
+  Lam Cons:Pi A:*. A -> (List A) -> (List A).
+  Lam Nil:Pi A:*. List A.
+  
+  Cons Nat 10 (Cons Nat 2 (Nil Nat)))
+  
 (Lam A:*. Pi R:*. (A -> R) -> R)
 (Lam A:*.
  Lam idA:Pi R:*. (A -> R) -> R.
  idA A (Lam x:A. x))
-
+  
 (Lam A:*. Lam B:*. Pi R:*. (A -> B -> R) -> R)
 (Lam A:*.
  Lam B:*.
@@ -30,7 +30,7 @@
  Lam y:B.
  Lam R:*.
  Lam f:A -> B -> R.
- f x y)
+ f x y) 
 
 (Lam A:*. Lam B:*. Pi R:*. (A -> R) -> (B -> R) -> R)
 (Lam A:*.
@@ -46,7 +46,7 @@
  Lam R:*.
  Lam f:A -> R.
  Lam g:B -> R.
- g y)
+ g y) 
 
 (Lam A:*. Pi R:*. (A -> R) -> R -> R)
 (Lam A:*.
@@ -59,8 +59,7 @@
  Lam R:*.
  Lam just:A -> R.
  Lam nothing:R.
- nothing)
-
+ nothing) 
 (Lam A:*. Pi R:*. (A -> R -> R) -> R -> R)
 (Lam A:*.
  Lam x:A.
@@ -73,4 +72,10 @@
  Lam R:*.
  Lam cons:A -> R -> R.
  Lam nil:R.
- nil)
+ nil))
+
+Nat
+(Lam x:Nat.
+ Lam y:Nat.
+ x)
+0
