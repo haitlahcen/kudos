@@ -60,6 +60,7 @@
  Lam just:A -> R.
  Lam nothing:R.
  nothing) 
+
 (Lam A:*. Pi R:*. (A -> R -> R) -> R -> R)
 (Lam A:*.
  Lam x:A.
