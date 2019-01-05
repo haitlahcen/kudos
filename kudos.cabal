@@ -1,0 +1,38 @@
+name:                kudos
+version:             0.1.0.0
+homepage:            http://github.com/haitlahcen/kudos
+license:             GPL-3
+license-file:        LICENSE
+author:              Hussein Ait-Lahcen
+maintainer:          hussein.ait-lahcen@fretlink.com
+category:            Language
+build-type:          Simple
+extra-source-files:  ChangeLog.md
+cabal-version:       >=1.10
+
+library
+  build-depends:       base >=4.10 && <4.13
+                     , mtl
+                     , parsers
+                     , trifecta
+                     , lens
+                     , text
+                     , unordered-containers
+  hs-source-dirs:      src
+  default-language:    Haskell2010
+  exposed-modules:     Kudos.Config
+                     , Kudos.Error
+                     , Kudos.Parser
+                     , Kudos.Syntax
+                     , Kudos.TypeChecker
+                     , Kudos.Normalizer
+                     , Kudos.Pretty
+
+executable kudos
+  main-is:             Main.hs
+  build-depends:       base >=4.10 && <4.13
+                     , kudos
+                     , mtl
+                     , text
+  hs-source-dirs:      app
+  default-language:    Haskell2010
