@@ -45,8 +45,8 @@ typeUniverse = 1
 kindUniverse :: Universe
 kindUniverse = liftUniverse typeUniverse
 
-injectQuantifier :: HasBindings t => Quantifier -> System -> t -> t
-injectQuantifier q s =
+bindIdentifier :: HasBindings t => Quantifier -> System -> t -> t
+bindIdentifier q s =
   case q of
     (Abstraction n)    -> inject n s
     (Product (Just n)) -> inject n s
@@ -72,35 +72,31 @@ typecheck (SVar n i) = do
   case H.lookup (n, i) (unBindings binds) of
     Just s  -> pure s
     Nothing -> throwing _UnknowBinding (n, binds)
-typecheck (SQuant q@(Abstraction n) l r) = do
-  l' <- typecheck l
-  case l' of
-    (SStar _) -> do
+typecheck (SQuant q@(Abstraction n) l r) = go =<< typecheck l
+  where
+    go (SStar _) = do
       let lnorm = normalize l
-      r' <- local (injectQuantifier q lnorm) (typecheck r)
+      r' <- local (bindIdentifier q lnorm) (typecheck r)
       pure $ SQuant (Product (Just n)) lnorm r'
+    go _ = throwing _InvalidAbstraction l
 typecheck (SQuant q@(Product _) l r) = do
   l' <- typecheck l
-  r' <- local (injectQuantifier q (normalize l)) (typecheck r)
-  case (l', r') of
-    (SStar u, SStar v) -> do
-      h <- view hierarchy
-      case h of
-        Predicative -> pure $ SStar $ max u v
-        Impredicative ->
-          pure $ SStar $
-          -- Impredicative only for low levels to avoid paradoxes
-          if u <= kindUniverse && v <= kindUniverse
-            then v
-            else max u v
-    _ -> throwing _InvalidProduct (l, r)
-typecheck (SApp f x) = do
-  f' <- typecheck f
-  case f' of
-    (SQuant (Product mn) l r) -> do
+  r' <- local (bindIdentifier q (normalize l)) (typecheck r)
+  h <- view hierarchy
+  go l' r' h
+  where
+    go (SStar u) (SStar v) Predicative = pure $ SStar $ max u v
+    go (SStar u) (SStar v) Impredicative
+      -- Impredicative only for low levels to avoid paradoxes
+      | u <= kindUniverse && v <= kindUniverse = pure $ SStar v
+      | otherwise = pure $ SStar $ max u v
+    go _ _ _ = throwing _InvalidProduct (l, r)
+typecheck (SApp f x) = go =<< typecheck f
+  where
+    go (SQuant (Product mn) l r) = do
       x' <- typecheck x
       if justice l x'
         then let shiftNamed n = shift n (-1) . substitute n 0 (shift n 1 x)
               in pure $ normalize $ maybe id shiftNamed mn r
         else throwing _Unfairness (normalize l, normalize x')
-    _ -> throwing _InvalidApplication (f, f', x)
+    go f' = throwing _InvalidApplication (f, f', x)
