@@ -90,7 +90,7 @@ typecheck (SQuant q@(Product _) l r) = do
         Impredicative ->
           pure $ SStar $
           -- Impredicative only for low levels to avoid paradoxes
-          if v <= kindUniverse
+          if u <= kindUniverse && v <= kindUniverse
             then v
             else max u v
     _ -> throwing _InvalidProduct (l, r)
