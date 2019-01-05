@@ -95,7 +95,7 @@ typecheck (SQuant q@(Product _) l r) = do
             else max u v
     _ -> throwing _InvalidProduct (l, r)
 typecheck (SApp f x) = do
-  f' <- normalize <$> typecheck f
+  f' <- typecheck f
   case f' of
     (SQuant (Product mn) l r) -> do
       x' <- typecheck x
