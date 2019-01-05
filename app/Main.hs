@@ -36,7 +36,7 @@ import qualified Data.Text.IO           as TIO
 main :: IO ()
 main = do
   expression <-
-    parseFromFileEx (runUnspaced parseSystem <* spaces <* eof) "./expression.k"
+    parseFromFileEx (runUnspaced parseSystem <* spaces <* eof) "./expression1.k"
   case expression of
     (Success system) ->
       let typeChecked =
