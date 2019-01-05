@@ -18,9 +18,6 @@ module Main where
 import           Control.Monad.Except
 import           Control.Monad.Identity
 import           Control.Monad.Reader
-import           Data.Bifoldable
-import           Data.Bitraversable
-import           Data.Foldable
 
 import           Kudos.Config
 import           Kudos.Error
@@ -32,7 +29,6 @@ import           Kudos.TypeChecker
 
 import qualified Data.Text.IO           as TIO
 
--- >>> main
 main :: IO ()
 main = do
   expression <-
@@ -55,4 +51,4 @@ main = do
              putStrLn ""
              putStrLn "Normalized system:"
              TIO.putStrLn $ pretty $ normalize system
-    (Failure err) -> print err
+    (Failure e) -> print e

@@ -11,6 +11,7 @@ extra-source-files:  ChangeLog.md
 cabal-version:       >=1.10
 
 library
+  ghc-options:         -Wall
   build-depends:       base >=4.10 && <4.13
                      , mtl
                      , parsers
@@ -29,6 +30,7 @@ library
                      , Kudos.Pretty
 
 executable kudos
+  ghc-options:         -Wall
   main-is:             Main.hs
   build-depends:       base >=4.10 && <4.13
                      , kudos

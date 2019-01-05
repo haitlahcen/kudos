@@ -11,8 +11,6 @@
 -- GNU General Public License for more details.
 -- You should have received a copy of the GNU General Public License
 -- along with this program. If not, see <http://www.gnu.org/licenses/>.
-{-# LANGUAGE OverloadedStrings #-}
-
 module Kudos.Syntax
   ( Universe
   , Index
@@ -21,11 +19,6 @@ module Kudos.Syntax
   , System(..)
   ) where
 
-import           Data.Bifoldable
-import           Data.Bifunctor
-import           Data.Bitraversable
-import           Data.HashMap.Strict
-import           Data.Maybe
 import           Data.Text
 
 type Universe = Int
@@ -54,7 +47,7 @@ instance Eq System where
   SVar x y == SVar x' y' = x == x' && y == y'
   SStar u == SStar u' = u == u'
   SApp f a == SApp f' a' = f == f' && a == a'
-  SQuant (Abstraction n) l r == SQuant (Abstraction n') l' r' =
+  SQuant (Abstraction _) l r == SQuant (Abstraction _) l' r' =
     l == l' && r == r'
-  SQuant (Product x) l r == SQuant (Product x') l' r' = l == l' && r == r'
+  SQuant (Product _) l r == SQuant (Product _) l' r' = l == l' && r == r'
   _ == _ = False

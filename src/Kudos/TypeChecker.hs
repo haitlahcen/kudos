@@ -11,8 +11,6 @@
 -- GNU General Public License for more details.
 -- You should have received a copy of the GNU General Public License
 -- along with this program. If not, see <http://www.gnu.org/licenses/>.
-{-# LANGUAGE FlexibleContexts #-}
-
 module Kudos.TypeChecker
   ( justice
   , typecheck
@@ -22,16 +20,12 @@ import           Control.Lens
 import           Control.Monad.Error.Lens
 import           Control.Monad.Except
 import           Control.Monad.Reader
-import           Data.Functor
 import           Data.HashMap.Strict      as H
-import           Data.Text                as T
 
 import           Kudos.Config
 import           Kudos.Error
 import           Kudos.Normalizer
 import           Kudos.Syntax             as S
-
-import           Debug.Trace
 
 justice :: System -> System -> Bool
 justice x y = normalize x == normalize y
@@ -48,11 +42,11 @@ kindUniverse = liftUniverse typeUniverse
 bindIdentifier :: HasBindings t => Quantifier -> System -> t -> t
 bindIdentifier q s =
   case q of
-    (Abstraction n)    -> inject n s
-    (Product (Just n)) -> inject n s
+    (Abstraction n)    -> inject n
+    (Product (Just n)) -> inject n
     _                  -> id
   where
-    inject n s =
+    inject n =
       bindings %~ Bindings . fmap (shift n 1) . H.insert (n, 0) s . unBindings
 
 typecheck ::
