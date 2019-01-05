@@ -80,8 +80,8 @@ typecheck (SQuant q@(Abstraction n) l r) = do
       r' <- local (injectQuantifier q lnorm) (typecheck r)
       pure $ SQuant (Product (Just n)) lnorm r'
 typecheck (SQuant q@(Product _) l r) = do
-  l' <- normalize <$> typecheck l
-  r' <- normalize <$> local (injectQuantifier q (normalize l)) (typecheck r)
+  l' <- typecheck l
+  r' <- local (injectQuantifier q (normalize l)) (typecheck r)
   case (l', r') of
     (SStar u, SStar v) -> do
       h <- view hierarchy
