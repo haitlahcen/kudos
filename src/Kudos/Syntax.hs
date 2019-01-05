@@ -15,6 +15,8 @@ module Kudos.Syntax
   ( Universe
   , Index
   , Identifier
+  , Literal(..)
+  , Type (..)
   , Quantifier(..)
   , System(..)
   ) where
@@ -27,6 +29,14 @@ type Index = Int
 
 type Identifier = Text
 
+data Literal =
+  LNat Integer
+  deriving (Show, Eq)
+
+data Type =
+  TNat
+  deriving (Show, Eq)
+
 data Quantifier
   = Abstraction Identifier
   | Product (Maybe Identifier)
@@ -35,6 +45,8 @@ data Quantifier
 data System
   = SVar Identifier
          Index
+  | SLit Literal
+  | SType Type
   | SStar Universe
   | SApp System
          System
@@ -45,6 +57,8 @@ data System
 
 instance Eq System where
   SVar x y == SVar x' y' = x == x' && y == y'
+  SLit x == SLit x' = x == x'
+  SType x == SType x' = x == x'
   SStar u == SStar u' = u == u'
   SApp f a == SApp f' a' = f == f' && a == a'
   SQuant (Abstraction _) l r == SQuant (Abstraction _) l' r' =

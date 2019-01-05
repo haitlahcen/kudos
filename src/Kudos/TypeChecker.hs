@@ -61,6 +61,8 @@ typecheck ::
   => System
   -> m System
 typecheck (SStar u) = pure $ SStar $ liftUniverse u
+typecheck (SLit (LNat _)) = pure $ SType TNat
+typecheck (SType _) = pure $ SStar typeUniverse
 typecheck (SVar n i) = do
   binds <- view bindings
   case H.lookup (n, i) (unBindings binds) of

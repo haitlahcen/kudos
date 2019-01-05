@@ -58,6 +58,12 @@ parseVar =
       pure (SVar n i)) <?>
   "Variable: x(@i)"
 
+parseLit :: MonadParsing m System
+parseLit = (SLit <$!> highlight Number (LNat <$!> natural)) <?> "Literal"
+
+parseType :: MonadParsing m System
+parseType = (SType <$!> (reserveText style "Nat" $> TNat)) <?> "Type"
+
 parseStar :: MonadParsing m System
 parseStar =
   SStar <$!> highlight Symbol (length <$!> some (reserveText style "*")) <?>
@@ -111,4 +117,6 @@ parseSystem = try parseApp <|> try parseArrow <|> parseSubSystem
 
 parseSubSystem :: MonadParsing m System
 parseSubSystem =
-  parens parseSystem <|> parsePi <|> parseLam <|> parseStar <|> parseVar
+  parens parseSystem <|> parsePi <|> parseLam <|> parseType <|> parseLit <|>
+  parseStar <|>
+  parseVar

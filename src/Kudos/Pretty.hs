@@ -23,6 +23,8 @@ pretty = pack . go
   where
     go (SVar n 0) = unpack n
     go (SVar n i) = unpack n <> "@" <> show i
+    go (SLit (LNat x)) = show x
+    go (SType TNat) = "Nat"
     go (SStar 1) = "✶"
     go (SStar 2) = "☐"
     go (SStar x) = replicate x '↑'

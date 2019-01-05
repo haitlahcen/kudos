@@ -16,9 +16,7 @@
  Lam Cons:Pi A:*. A -> (List A) -> (List A).
  Lam Nil:Pi A:*. List A.
 
- Lam A:*.
- Lam x:Identity A.
- unIdentity A x)
+ Cons Nat 1 (Cons Nat 2 (Nil Nat)))
 
 (Lam A:*. Pi R:*. (A -> R) -> R)
 (Lam A:*.
