@@ -43,7 +43,7 @@ style =
     { _styleName = "Identifier"
     , _styleStart = letter
     , _styleLetter = alphaNum
-    , _styleReserved = H.fromList ["Lam", "Pi"]
+    , _styleReserved = H.fromList ["Lam", "Pi", "let", "in"]
     , _styleHighlight = Identifier
     , _styleReservedHighlight = ReservedIdentifier
     }
@@ -68,6 +68,45 @@ parseStar :: MonadParsing m System
 parseStar =
   SStar <$!> highlight Symbol (length <$!> some (reserveText style "*")) <?>
   "Universe"
+
+{-
+ let a = b in
+ let c = a in
+ a + c
+
+-}
+parseLet :: MonadParsing m System
+parseLet =
+  (do _ <- reserveText style "let"
+      _ <- spaces
+      binds <- parseBinding `sepBy` (spaces *> symbolic ',' <* spaces)
+      _ <- spaces
+      _ <- reserveText style "in"
+      _ <- spaces
+      body <- parseSystem
+      _ <- spaces
+      pure $ foldl goApp (foldr goLam body binds) binds) <?>
+  "Binding: Let x = y, a = b in z"
+    -- lambda are nested
+  where
+    goLam (n, l, _) s = SQuant (Abstraction n) l s
+    -- application are sequenced
+    goApp s (_, _, r) = SApp s r
+
+parseBinding :: MonadParsing m (Identifier, System, System)
+parseBinding =
+  (do n <- highlight Identifier (ident style)
+      _ <- spaces
+      _ <- highlight ReservedConstructorOperator colon
+      _ <- spaces
+      l <- parseSystem
+      _ <- spaces
+      _ <- highlight ReservedConstructorOperator (symbolic '=')
+      _ <- spaces
+      r <- parseSystem
+      _ <- spaces
+      pure (n, l, r)) <?>
+  "Binding: x = y"
 
 parseLam :: MonadParsing m System
 parseLam =
@@ -117,6 +156,7 @@ parseSystem = try parseApp <|> try parseArrow <|> parseSubSystem
 
 parseSubSystem :: MonadParsing m System
 parseSubSystem =
-  parens parseSystem <|> parsePi <|> parseLam <|> parseType <|> parseLit <|>
+  parens parseSystem <|> parseLet <|> parsePi <|> parseLam <|> parseType <|>
+  parseLit <|>
   parseStar <|>
   parseVar

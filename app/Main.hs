@@ -32,7 +32,7 @@ import qualified Data.Text.IO           as TIO
 main :: IO ()
 main = do
   expression <-
-    parseFromFileEx (runUnspaced parseSystem <* spaces <* eof) "./dependent.k"
+    parseFromFileEx (runUnspaced parseSystem <* spaces <* eof) "./refl.k"
   case expression of
     (Success system) ->
       let typeChecked =
